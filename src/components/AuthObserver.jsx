@@ -6,15 +6,16 @@ import app from "../firebase";
 import { clearUser, setUser } from "../redux/slices/userSlice";
 
 const AuthObserver = () => {
-  const auth = getAuth(app);
+  const auth = getAuth(app); // Firebase 인증 객체를 가져옵니다.
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    // 사용자 인증 상태 감지
+    // onAuthStateChanged 함수로 사용자 인증 상태 변화 감지
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/");
+        navigate("/"); // 사용자가 로그인한 경우 홈 페이지로 이동합니다.
+
         dispatch(
           setUser({
             uid: user.uid,
@@ -23,15 +24,15 @@ const AuthObserver = () => {
           })
         );
       } else {
-        // 로그아웃 시
-        navigate("/login");
+        navigate("/login"); // 사용자가 로그아웃한 경우 로그인 페이지로 이동합니다.
+
         dispatch(clearUser);
       }
     });
 
-    // 언마운트, auth, navigate 값 변경 시, onAuthStateChanged 구독 취소
+    // 클린업 함수
     return () => {
-      unsubscribe();
+      unsubscribe(); // 언마운트, auth, navigate 값 변경 시, onAuthStateChanged 구독 해지
     };
   }, [auth, navigate]);
 
