@@ -11,12 +11,13 @@ import { Link } from "react-router-dom";
 import app, { db } from "../../firebase";
 
 const RegisterPage = () => {
-  // 회원가입을 처리할 동안 다시 버튼을 누르지 못하게.
+  // 로그인을 처리할 동안 다시 버튼을 누르지 못하게.
   const [loading, setLoading] = useState(false);
   const [errorFromSubmit, setErrorFromSubmit] = useState("");
 
   const auth = getAuth(app);
 
+  // 유효성 검사
   const {
     register,
     watch,
