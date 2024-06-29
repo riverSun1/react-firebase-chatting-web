@@ -19,7 +19,20 @@ const initialState = {
 export const chatRoomSlice = createSlice({
   name: "chatRoom",
   initialState,
-  reducers: {},
+  reducers: {
+    setCurrentRoom: (state, action) => {
+      state.currentChatRoom = action.payload;
+    },
+    setPrivateRoom: (state, action) => {
+      state.isPrivateChatRoom = action.payload;
+    },
+    setUserPosts: (state, action) => {
+      state.userPosts = action.payload;
+    },
+  },
 });
+
+export const { setCurrentRoom, setPrivateRoom, setUserPosts } =
+  chatRoomSlice.actions;
 
 export default chatRoomSlice.reducer;
