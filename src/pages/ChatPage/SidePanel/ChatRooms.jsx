@@ -115,7 +115,7 @@ const ChatRooms = () => {
     <div className="w-full">
       <div className="flex flex-row items-center justify-between p-1">
         {/* px-3 py-2 rounded-md bg-cyan-600 */}
-        ChatRooms
+        채팅방
         <FaPlus onClick={() => setShowModal(true)} className="cursor-pointer" />
       </div>
       <ul className="text-white p-1">{renderChatRooms()}</ul>
