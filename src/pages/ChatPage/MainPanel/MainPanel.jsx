@@ -3,19 +3,9 @@ import MessageHeader from "./MessageHeader";
 
 const MainPanel = () => {
   return (
-    <div>
+    <div className="w-full flex flex-col">
       <MessageHeader />
-      <div
-        style={{
-          width: "100%",
-          height: 450,
-          border: "0.2rem solid #ececec",
-          borderRadius: "4px",
-          padding: "1rem",
-          marginBottom: "1rem",
-          overflowY: "auto",
-        }}
-      ></div>
+      <div className="w-full h-72 border-2 border-gray-200 rounded-md p-4 mb-4"></div>
       <MessageForm />
     </div>
   );

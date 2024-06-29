@@ -3,11 +3,11 @@ import SidePanel from "./SidePanel/SidePanel";
 
 const ChatPage = () => {
   return (
-    <div style={{ display: "flex" }}>
-      <div style={{ width: "300px" }}>
+    <div className="flex flex-row">
+      <div className="w-72">
         <SidePanel />
       </div>
-      <div style={{ width: "100%" }}>
+      <div className="w-full">
         <MainPanel />
       </div>
     </div>

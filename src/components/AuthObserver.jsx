@@ -2,11 +2,12 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import app from "../firebase";
+// import app from "../firebase";
+import firebase from "../firebase";
 import { clearUser, setUser } from "../redux/slices/userSlice";
 
 const AuthObserver = () => {
-  const auth = getAuth(app); // Firebase 인증 객체를 가져옵니다.
+  const auth = getAuth(firebase); // Firebase 인증 객체를 가져옵니다.
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -34,7 +35,7 @@ const AuthObserver = () => {
     return () => {
       unsubscribe(); // 언마운트, auth, navigate 값 변경 시, onAuthStateChanged 구독 해지
     };
-  }, [auth, navigate]);
+  }, [auth, dispatch, navigate]);
 
   return null;
 };

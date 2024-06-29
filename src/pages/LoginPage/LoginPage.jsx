@@ -2,14 +2,13 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
-import app from "../../firebase";
+import firebase from "../../firebase";
 
 const LoginPage = () => {
   // 회원가입을 처리할 동안 다시 버튼을 누르지 못하게.
   const [loading, setLoading] = useState(false);
   const [errorFromSubmit, setErrorFromSubmit] = useState("");
-
-  const auth = getAuth(app);
+  const auth = getAuth(firebase);
 
   // 유효성 검사
   const {
@@ -23,8 +22,8 @@ const LoginPage = () => {
     //data.email data.password data.name
     try {
       setLoading(true);
-
       await signInWithEmailAndPassword(auth, data.email, data.password);
+      console.log(data);
     } catch (error) {
       console.log(error);
       // error.message
@@ -38,13 +37,20 @@ const LoginPage = () => {
   };
 
   return (
-    <div id="auth-wrapper">
-      <div style={{ textAlign: "center" }}>
-        <h3>Login</h3>
-      </div>
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <label htmlFor="email">Email</label>
+    <div
+      id="auth-wrapper"
+      className="flex flex-col justify-center items-center min-h-screen"
+    >
+      <div className="text-2xl font-bold text-center m-4">로그인</div>
+      <form
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col text-center m-4 gap-2 border border-gray-300 rounded px-28 py-20"
+      >
+        <label htmlFor="email" className="text-start">
+          Email
+        </label>
         <input
+          className="border border-gray-300 rounded"
           id="email"
           type="email"
           name="email"
@@ -52,8 +58,11 @@ const LoginPage = () => {
         />
         {errors.email && <p>이메일을 입력해주세요.</p>}
 
-        <label htmlFor="password">Password</label>
+        <label htmlFor="password" className="text-start">
+          Password
+        </label>
         <input
+          className="border border-gray-300 rounded"
           id="password"
           type="password"
           name="password"
@@ -68,12 +77,13 @@ const LoginPage = () => {
 
         {errorFromSubmit && <p>{errorFromSubmit}</p>}
 
-        <input type="submit" disabled={loading} />
-        <Link
-          style={{ color: "gray", textDecoration: "none" }}
-          to={"/register"}
-        >
-          계정이 아직 없다면...
+        <input
+          type="submit"
+          disabled={loading}
+          className="border border-gray-300 rounded bg-gray-300 p-1 my-2"
+        />
+        <Link className="text-gray-500 no-underline" to="/register">
+          회원가입하러 가기
         </Link>
       </form>
     </div>

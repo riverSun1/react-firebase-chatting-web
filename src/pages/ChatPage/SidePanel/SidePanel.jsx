@@ -5,15 +5,7 @@ import UserPanel from "./UserPanel";
 
 const SidePanel = () => {
   return (
-    <div
-      style={{
-        backgroundColor: "#7B83EB",
-        padding: "2rem",
-        minHeight: "100vh",
-        color: "white",
-        minWidth: "275px",
-      }}
-    >
+    <div className="bg-cyan-900 p-8 min-h-screen text-white min-w-[275px]">
       <UserPanel />
       <Favorite />
       <ChatRooms />

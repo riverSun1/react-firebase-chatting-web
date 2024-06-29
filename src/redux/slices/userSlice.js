@@ -19,7 +19,11 @@ export const userSlice = createSlice({
       state.currentUser.displayName = action.payload.displayName;
     },
     clearUser: (state) => {
-      state.currentUser = {};
+      state.currentUser = {
+        uid: "",
+        photoURL: "",
+        displayName: "",
+      };
     },
     setPhotoUrl: (state, action) => {
       state.currentUser = {
