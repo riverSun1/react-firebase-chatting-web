@@ -101,11 +101,17 @@ const ChatRooms = () => {
         <li
           key={room.id}
           onClick={() => changeChatRoom(room)}
-          className={`cursor-pointer rounded-md p-1.5 y-1 hover:bg-cyan-700 ${
-            room.id === activeChatRoomId ? "bg-cyan-950" : "bg-transparent"
+          className={`cursor-pointer rounded-md y-1 ${
+            room.id === activeChatRoomId ? "bg-cyan-700" : "bg-transparent"
           }`}
         >
-          - {room.name}
+          <div
+            className={`rounded-md p-1.5 ${
+              room.id === activeChatRoomId ? "bg-cyan-700" : "hover:bg-cyan-950"
+            }`}
+          >
+            - {room.name}
+          </div>
         </li>
       ));
     }
