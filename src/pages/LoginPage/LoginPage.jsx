@@ -1,14 +1,17 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import firebase from "../../firebase";
+import { setUser } from "../../redux/slices/userSlice";
 
 const LoginPage = () => {
   // 회원가입을 처리할 동안 다시 버튼을 누르지 못하게.
   const [loading, setLoading] = useState(false);
   const [errorFromSubmit, setErrorFromSubmit] = useState("");
   const auth = getAuth(firebase);
+  const dispatch = useDispatch();
 
   // 유효성 검사
   const {
@@ -23,9 +26,16 @@ const LoginPage = () => {
     try {
       setLoading(true);
       await signInWithEmailAndPassword(auth, data.email, data.password);
-      console.log(data);
+      // console.log(data);
+      dispatch(
+        setUser({
+          uid: getAuth().currentUser.uid,
+          displayName: getAuth().currentUser.displayName,
+          photoURL: getAuth().currentUser.photoURL,
+        })
+      );
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       // error.message
       setErrorFromSubmit(error.message);
       setTimeout(() => {

@@ -7,13 +7,16 @@ import { ref, set } from "firebase/database";
 import md5 from "md5";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import firebase, { db } from "../../firebase";
+import { setUser } from "../../redux/slices/userSlice";
 
 const RegisterPage = () => {
   // 로그인을 처리할 동안 다시 버튼을 누르지 못하게.
   const [loading, setLoading] = useState(false);
   const [errorFromSubmit, setErrorFromSubmit] = useState("");
+  const dispatch = useDispatch();
 
   const auth = getAuth(firebase);
 
@@ -28,7 +31,7 @@ const RegisterPage = () => {
     try {
       setLoading(true);
 
-      // 회원가입
+      // 회원가입 => onAuthStateChanged 작동.
       const createdUser = await createUserWithEmailAndPassword(
         auth,
         data.email,
@@ -36,18 +39,26 @@ const RegisterPage = () => {
       );
       // console.log(createdUser);
 
-      // 닉네임, 프로필 이미지
+      // 닉네임, 프로필 이미지 => onAuthStateChanged 작동 시점에는 null값임.
       await updateProfile(auth.currentUser, {
         displayName: data.name,
         photoURL: `http://gravatar.com/avatar/${md5(
           createdUser.user.email
         )}?d=identicon`,
       });
-      // console.log("currentUser => ", auth.currentUser);
-      // console.log(
-      //   "photo URL => ",
-      //   `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
-      // );
+
+      // console.log(Object.entries(getAuth().currentUser));
+      // 그래서 getAuth로 다시 받아옴.
+      // console.log(getAuth().currentUser);
+
+      // 어짜피 onAuthStateChanged가 작동한 이후일거니까 스토어에 바로 값을 넣어도된다.
+      dispatch(
+        setUser({
+          uid: getAuth().currentUser.uid,
+          displayName: getAuth().currentUser.displayName,
+          photoURL: getAuth().currentUser.photoURL,
+        })
+      );
 
       // db users 테이블에 저장.
       await set(ref(db, `users/${createdUser.user.uid}`), {
