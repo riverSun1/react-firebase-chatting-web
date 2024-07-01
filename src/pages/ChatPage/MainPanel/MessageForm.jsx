@@ -1,25 +1,25 @@
-import firebase from "firebase/compat/app";
 import {
   child,
   ref as dbRef,
   push,
   serverTimestamp,
   set,
-  ref as strRef,
 } from "firebase/database";
 import {
   getDownloadURL,
-  getStorage,
+  ref as storageRef,
   uploadBytesResumable,
 } from "firebase/storage";
 import { useRef, useState } from "react";
+import { ProgressBar } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { db } from "../../../firebase";
+import { db, storage } from "../../../firebase";
 
 const MessageForm = () => {
   const [content, setContent] = useState("");
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [percentage, setPercentage] = useState(0);
   const messagesRef = dbRef(db, "messages");
   const inputOpenImageRef = useRef(null);
 
@@ -81,12 +81,11 @@ const MessageForm = () => {
   const handleUploadImage = (event) => {
     const file = event.target.files[0];
 
-    const storage = getStorage(firebase);
     const metadata = {
       contentType: file.type,
     };
-    const storageRef = strRef(storage, `${getPath()}/${file.name}`);
-    const uploadTask = uploadBytesResumable(storageRef, file, metadata);
+    const storageReference = storageRef(storage, `${getPath()}/${file.name}`);
+    const uploadTask = uploadBytesResumable(storageReference, file, metadata);
 
     // Listen for state changes, errors, and completion of the upload.
     uploadTask.on(
@@ -95,7 +94,9 @@ const MessageForm = () => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + progress + "% done");
+        // console.log("Upload is " + progress + "% done");
+        setPercentage(Math.round(progress));
+
         switch (snapshot.state) {
           case "paused":
             console.log("Upload is paused");
@@ -126,7 +127,13 @@ const MessageForm = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
+          // console.log("File available at", downloadURL);
+
+          set(
+            push(child(messagesRef, currentChatRoom.id)),
+            createMessage(downloadURL)
+          );
+          setLoading(false);
         });
       }
     );
@@ -140,6 +147,13 @@ const MessageForm = () => {
           onChange={(e) => setContent(e.target.value)}
           className="w-full h-24 border-2 rounded-md p-3"
         />
+        {(percentage === 0 || percentage === 100) && (
+          <ProgressBar
+            variant="warning"
+            label={`${percentage}%`}
+            now={percentage}
+          />
+        )}
         <div className="text-red-500">{errorMsg}</div>
         <div>
           <div className="flex flex-row gap-2.5 my-2">

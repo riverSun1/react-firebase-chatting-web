@@ -40,7 +40,7 @@ const Message = ({ message, user }) => {
         </div>
         <div>
           {isImage(message) ? (
-            <img className="w-70 rounded-md" alt="이미지" src={message.image} />
+            <img className="w-25 rounded-md" alt="이미지" src={message.image} />
           ) : (
             <p>{message.content}</p>
           )}
