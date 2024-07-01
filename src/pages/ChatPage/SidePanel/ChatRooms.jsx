@@ -106,7 +106,7 @@ const ChatRooms = () => {
           }`}
         >
           <div
-            className={`rounded-md p-1.5 ${
+            className={`rounded-md p-1 ${
               room.id === activeChatRoomId ? "bg-cyan-700" : "hover:bg-cyan-950"
             }`}
           >
