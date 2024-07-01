@@ -43,14 +43,14 @@ const RegisterPage = () => {
           createdUser.user.email
         )}?d=identicon`,
       });
-      // console.log(auth.currentUser);
+      // console.log("currentUser => ", auth.currentUser);
       // console.log(
       //   "photo URL => ",
       //   `http://gravatar.com/avatar/${md5(createdUser.user.email)}?d=identicon`
       // );
 
       // db users 테이블에 저장.
-      set(ref(db, `users/${createdUser.user.uid}`), {
+      await set(ref(db, `users/${createdUser.user.uid}`), {
         name: createdUser.user.displayName,
         image: createdUser.user.photoURL,
       });

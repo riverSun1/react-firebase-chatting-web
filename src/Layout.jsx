@@ -1,13 +1,9 @@
 import { Outlet } from "react-router-dom";
-import AuthObserver from "./components/AuthObserver";
+import useAuth from "./hooks/useAuth";
 
 const Layout = () => {
-  return (
-    <>
-      <AuthObserver />
-      <Outlet />
-    </>
-  );
+  useAuth();
+  return <Outlet />;
 };
 
 export default Layout;

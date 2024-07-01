@@ -14,8 +14,10 @@ const AuthObserver = () => {
     // onAuthStateChanged 함수로 사용자 인증 상태 변화 감지
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        navigate("/"); // 사용자가 로그인한 경우 홈 페이지로 이동합니다.
-
+        console.log("User:", user); // 사용자 객체 로깅
+        console.log("UID:", user.uid);
+        console.log("Display Name:", user.displayName);
+        console.log("Photo URL:", user.photoURL);
         dispatch(
           setUser({
             uid: user.uid,
@@ -23,10 +25,12 @@ const AuthObserver = () => {
             photoURL: user.photoURL,
           })
         );
+
+        navigate("/"); // 사용자가 로그인한 경우 홈 페이지로 이동합니다.
       } else {
         navigate("/login"); // 사용자가 로그아웃한 경우 로그인 페이지로 이동합니다.
 
-        dispatch(clearUser);
+        dispatch(clearUser());
       }
     });
 
