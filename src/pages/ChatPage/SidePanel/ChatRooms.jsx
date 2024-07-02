@@ -141,6 +141,7 @@ const ChatRooms = () => {
                 onChange={(e) => setChatRoomName(e.target.value)}
                 value={chatRoomName}
                 placeholder="채팅 방 이름을 입력해주세요."
+                className="mb-3"
               />
               <Form.Label>채팅 방 설명</Form.Label>
               <Form.Control

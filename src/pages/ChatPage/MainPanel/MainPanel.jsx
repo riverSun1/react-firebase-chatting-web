@@ -6,7 +6,8 @@ import {
   onChildRemoved,
 } from "firebase/database";
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
+import Skeleton from "../../../components/Skeleton";
 import { db } from "../../../firebase";
 import Message from "./Message";
 import MessageForm from "./MessageForm";
@@ -24,12 +25,13 @@ const MainPanel = () => {
   const [typingUsers, setTypingUsers] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
   const { currentChatRoom } = useSelector((state) => state.chatRoom);
-  const dispatch = useDispatch();
   const messageEndRef = useRef(null);
 
   useEffect(() => {
-    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
-  });
+    if (!messagesLoading) {
+      messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messagesLoading, messages]);
 
   useEffect(() => {
     if (currentChatRoom.id) {
@@ -122,10 +124,23 @@ const MainPanel = () => {
     );
   };
 
+  const renderMessageSkeleton = (loading) => {
+    return (
+      loading && (
+        <>
+          {[...Array(5)].map((_, i) => (
+            <Skeleton key={i} />
+          ))}
+        </>
+      )
+    );
+  };
+
   return (
     <div className="w-full flex flex-col p-5 gap-3">
       <MessageHeader handleSearchChange={handleSearchChange} />
       <div className="w-full h-96 border-2 border-gray-200 rounded-md overflow-y-auto">
+        {renderMessageSkeleton(messagesLoading)}
         {searchLoading && <div>loading...</div>}
         {searchTerm ? renderMessages(searchResults) : renderMessages(messages)}
         {/* {renderMessages(messages)} */}

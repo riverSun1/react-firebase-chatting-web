@@ -29,7 +29,7 @@ const Message = ({ message, user }) => {
           />
           <span
             className={`text-xl items-center font-bold ${
-              isMessageMine(message, user) ? "text-cyan-700" : "text-black"
+              isMessageMine(message, user) ? "text-cyan-600" : "text-black"
             }`}
           >
             {message.user.name}
