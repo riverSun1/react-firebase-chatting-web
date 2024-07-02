@@ -2,6 +2,7 @@ import {
   child,
   ref as dbRef,
   push,
+  remove,
   serverTimestamp,
   set,
 } from "firebase/database";
@@ -139,12 +140,25 @@ const MessageForm = () => {
     );
   };
 
+  // Typing...
+  const handleChange = (event) => {
+    setContent(event.target.value);
+
+    if (event.target.value) {
+      set(dbRef(db, `typing/${currentChatRoom.id}/${currentUser.uid}`), {
+        userUid: currentUser.displayName,
+      });
+    } else {
+      remove(dbRef(db, `typing/${currentChatRoom.id}/${currentUser.uid}`));
+    }
+  };
+
   return (
     <div>
       <form onSubmit={handleSubmit}>
         <textarea
           value={content}
-          onChange={(e) => setContent(e.target.value)}
+          onChange={handleChange}
           className="w-full h-24 border-2 rounded-md p-3"
         />
         {(percentage === 0 || percentage === 100) && (

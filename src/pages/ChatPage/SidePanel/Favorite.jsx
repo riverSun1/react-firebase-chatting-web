@@ -6,12 +6,18 @@ import {
   ref,
 } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../../firebase";
+import {
+  setCurrentRoom,
+  setPrivateRoom,
+} from "../../../redux/slices/chatRoomSlice";
 
 const Favorite = () => {
   const [favoriteChatRooms, setFavoriteChatRooms] = useState([]);
+  const [activeChatRoomId, setActiveChatRoomId] = useState("");
   const usersRef = ref(db, "users");
+  const dispatch = useDispatch();
 
   const { currentUser } = useSelector((state) => state.user);
 
@@ -45,19 +51,45 @@ const Favorite = () => {
     });
   };
 
+  const changeChatRoom = (room) => {
+    dispatch(setCurrentRoom(room));
+    dispatch(setPrivateRoom(room));
+    setActiveChatRoomId(room.id);
+  };
+
   const renderFavoriteChatRooms = (favoriteChatRooms) => {
     return (
       favoriteChatRooms.length > 0 &&
       favoriteChatRooms.map((chatRoom) => (
-        <li key={chatRoom.id}>- {chatRoom.name}</li>
+        <li
+          key={chatRoom.id}
+          onClick={() => changeChatRoom(chatRoom)}
+          className={`rounded-md cursor-pointer ${
+            chatRoom.id === activeChatRoomId
+              ? "p-1 bg-cyan-700"
+              : "bg-transparent"
+          }`}
+        >
+          <div
+            className={`rounded-md ${
+              chatRoom.id === activeChatRoomId
+                ? "bg-cyan-700"
+                : "p-1 hover:bg-cyan-950"
+            }`}
+          >
+            - {chatRoom.name}
+          </div>
+        </li>
       ))
     );
   };
 
   return (
-    <div>
-      <div>⭐ 즐겨찾기</div>
-      <ul>{renderFavoriteChatRooms(favoriteChatRooms)}</ul>
+    <div className="m-1">
+      <div className="py-1.5">⭐ 즐겨찾기</div>
+      <ul className="m-1 cursor-pointer">
+        {renderFavoriteChatRooms(favoriteChatRooms)}
+      </ul>
     </div>
   );
 };

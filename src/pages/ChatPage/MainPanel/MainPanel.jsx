@@ -1,4 +1,10 @@
-import { child, ref as dbRef, off, onChildAdded } from "firebase/database";
+import {
+  child,
+  ref as dbRef,
+  off,
+  onChildAdded,
+  onChildRemoved,
+} from "firebase/database";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../../firebase";
@@ -8,11 +14,14 @@ import MessageHeader from "./MessageHeader";
 
 const MainPanel = () => {
   const messagesRef = dbRef(db, "messages");
+  const typingRef = dbRef(db, "typing");
+
   const [messages, setMessages] = useState([]);
   const [messagesLoading, setMessagesLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
+  const [typingUsers, setTypingUsers] = useState([]);
 
   const { currentUser } = useSelector((state) => state.user);
   const { currentChatRoom } = useSelector((state) => state.chatRoom);
@@ -21,11 +30,38 @@ const MainPanel = () => {
   useEffect(() => {
     if (currentChatRoom.id) {
       addMessagesListener(currentChatRoom.id);
+      addTypingListeners(currentChatRoom.id);
     }
     return () => {
       off(messagesRef);
     };
   }, [currentChatRoom.id]);
+
+  const addTypingListeners = (chatRoomId) => {
+    let typingUsers = [];
+
+    onChildAdded(child(typingRef, chatRoomId), (DataSnapshot) => {
+      if (DataSnapshot.key !== currentUser.uid) {
+        typingUsers = typingUsers.concat({
+          id: DataSnapshot.key,
+          name: DataSnapshot.val(),
+        });
+        setTypingUsers(typingUsers);
+      }
+    });
+
+    onChildRemoved(child(typingRef, chatRoomId), (DataSnapshot) => {
+      const index = typingUsers.findIndex(
+        (user) => user.id === DataSnapshot.key
+      );
+      if (index !== -1) {
+        typingUsers = typingUsers.filter(
+          (user) => user.id !== DataSnapshot.key
+        );
+        setTypingUsers(typingUsers);
+      }
+    });
+  };
 
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
@@ -51,6 +87,7 @@ const MainPanel = () => {
 
   const addMessagesListener = (chatRoomId) => {
     const messagesArray = [];
+    setMessages([]);
 
     onChildAdded(child(messagesRef, chatRoomId), (DataSnapshot) => {
       messagesArray.push(DataSnapshot.val());
@@ -70,6 +107,17 @@ const MainPanel = () => {
     );
   };
 
+  const renderTypingUsers = (typingUsers) => {
+    return (
+      typingUsers.length > 0 &&
+      typingUsers.map((user) => (
+        <span key={user.name.userUid}>
+          {user.name.userUid}님이 채팅을 입력하고 있습니다...
+        </span>
+      ))
+    );
+  };
+
   return (
     <div className="w-full flex flex-col p-5 gap-3">
       <MessageHeader handleSearchChange={handleSearchChange} />
@@ -78,6 +126,7 @@ const MainPanel = () => {
         {searchTerm ? renderMessages(searchResults) : renderMessages(messages)}
         {/* {renderMessages(messages)} */}
       </div>
+      {renderTypingUsers(typingUsers)}
       <MessageForm />
     </div>
   );
