@@ -5,7 +5,7 @@ import {
   onChildAdded,
   onChildRemoved,
 } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../../firebase";
 import Message from "./Message";
@@ -22,10 +22,14 @@ const MainPanel = () => {
   const [searchResults, setSearchResults] = useState([]);
   const [searchLoading, setSearchLoading] = useState(false);
   const [typingUsers, setTypingUsers] = useState([]);
-
   const { currentUser } = useSelector((state) => state.user);
   const { currentChatRoom } = useSelector((state) => state.chatRoom);
   const dispatch = useDispatch();
+  const messageEndRef = useRef(null);
+
+  useEffect(() => {
+    messageEndRef.current.scrollIntoView({ behavior: "smooth" });
+  });
 
   useEffect(() => {
     if (currentChatRoom.id) {
@@ -121,10 +125,11 @@ const MainPanel = () => {
   return (
     <div className="w-full flex flex-col p-5 gap-3">
       <MessageHeader handleSearchChange={handleSearchChange} />
-      <div className="w-full h-96 border-2 border-gray-200 rounded-md">
+      <div className="w-full h-96 border-2 border-gray-200 rounded-md overflow-y-auto">
         {searchLoading && <div>loading...</div>}
         {searchTerm ? renderMessages(searchResults) : renderMessages(messages)}
         {/* {renderMessages(messages)} */}
+        <div ref={messageEndRef} />
       </div>
       {renderTypingUsers(typingUsers)}
       <MessageForm />

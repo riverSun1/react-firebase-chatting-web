@@ -53,7 +53,7 @@ const Favorite = () => {
 
   const changeChatRoom = (room) => {
     dispatch(setCurrentRoom(room));
-    dispatch(setPrivateRoom(room));
+    dispatch(setPrivateRoom(false));
     setActiveChatRoomId(room.id);
   };
 

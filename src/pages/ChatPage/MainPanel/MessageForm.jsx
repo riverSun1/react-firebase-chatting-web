@@ -135,6 +135,7 @@ const MessageForm = () => {
             createMessage(downloadURL)
           );
           setLoading(false);
+          setPercentage(0);
         });
       }
     );
@@ -159,9 +160,9 @@ const MessageForm = () => {
         <textarea
           value={content}
           onChange={handleChange}
-          className="w-full h-24 border-2 rounded-md p-3"
+          className="w-full h-20 border-2 rounded-md p-3"
         />
-        {(percentage === 0 || percentage === 100) && (
+        {percentage > 0 && percentage < 100 && (
           <ProgressBar
             variant="warning"
             label={`${percentage}%`}

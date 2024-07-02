@@ -19,16 +19,16 @@ const Message = ({ message, user }) => {
 
   return (
     <div className="flex flex-row gap-2 p-3 justify-start items-center">
-      <Image
-        roundedCircle
-        className="w-10 h-10"
-        src={message.user.image}
-        alt={message.user.name}
-      />
       <div className="flex flex-col">
         <div className="flex flex-row gap-2 items-center">
+          <Image
+            roundedCircle
+            className="w-9 h-9"
+            src={message.user.image}
+            alt={message.user.name}
+          />
           <span
-            className={`text-lg items-center font-bold ${
+            className={`text-xl items-center font-bold ${
               isMessageMine(message, user) ? "text-cyan-700" : "text-black"
             }`}
           >
@@ -40,9 +40,13 @@ const Message = ({ message, user }) => {
         </div>
         <div>
           {isImage(message) ? (
-            <img className="w-25 rounded-md" alt="이미지" src={message.image} />
+            <img
+              className="w-25 rounded-md ml-12"
+              alt="이미지"
+              src={message.image}
+            />
           ) : (
-            <p>{message.content}</p>
+            <p className="ml-12">{message.content}</p>
           )}
         </div>
       </div>
