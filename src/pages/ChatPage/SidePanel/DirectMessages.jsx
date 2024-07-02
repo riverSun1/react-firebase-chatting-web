@@ -1,10 +1,15 @@
 import { onChildAdded, ref } from "firebase/database";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../../firebase";
+import {
+  setCurrentRoom,
+  setPrivateRoom,
+} from "../../../redux/slices/chatRoomSlice";
 
 const DirectMessages = () => {
   const usersRef = ref(db, "users");
+  const dispatch = useDispatch();
   const [users, setUsers] = useState([]);
   const [activeChatRoom, setActiveChatRoom] = useState([]);
   const { currentUser } = useSelector((state) => state.user);
@@ -30,6 +35,25 @@ const DirectMessages = () => {
 
   // console.log(users);
 
+  const getChatRoomId = (userId) => {
+    const currentUserId = currentUser.uid;
+
+    return userId > currentUserId
+      ? `${userId}/${currentUserId}`
+      : `${currentUserId}/${userId}`;
+  };
+
+  const changeChatRoom = (user) => {
+    const chatRoomId = getChatRoomId(user.uid);
+    const chatRoomData = {
+      id: chatRoomId,
+      name: user.name,
+    };
+    dispatch(setCurrentRoom(chatRoomData));
+    dispatch(setPrivateRoom(true));
+    setActiveChatRoom(user.uid);
+  };
+
   const renderDirectMessages = (users) => {
     return (
       users.length > 0 &&
@@ -39,7 +63,7 @@ const DirectMessages = () => {
           className={`rounded-md cursor-pointer ${
             user.uid === activeChatRoom ? "p-1 bg-cyan-700" : "bg-transparent"
           }`}
-          onClick={() => setActiveChatRoom(user.uid)}
+          onClick={() => changeChatRoom(user)}
         >
           <div
             className={`rounded-md ${

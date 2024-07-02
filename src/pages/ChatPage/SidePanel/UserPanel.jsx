@@ -97,9 +97,9 @@ const UserPanel = () => {
   return (
     <div>
       <h3 className="flex flex-row text-2xl font-bold text-white gap-2 mb-3">
-        <IoIosChatboxes /> Chat APP
+        <IoIosChatboxes /> Chat Web
       </h3>
-      <div className="flex flex-row mb-3">
+      <div className="flex flex-row ml-2 my-4">
         <Image
           src={currentUser.photoURL}
           roundedCircle

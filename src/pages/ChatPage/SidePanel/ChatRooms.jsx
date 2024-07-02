@@ -11,7 +11,10 @@ import { Button, Form, Modal } from "react-bootstrap";
 import { FaPlus } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { db } from "../../../firebase";
-import { setCurrentRoom } from "../../../redux/slices/chatRoomSlice";
+import {
+  setCurrentRoom,
+  setPrivateRoom,
+} from "../../../redux/slices/chatRoomSlice";
 
 const ChatRooms = () => {
   const [showModal, setShowModal] = useState(false);
@@ -92,6 +95,7 @@ const ChatRooms = () => {
 
   const changeChatRoom = (room) => {
     dispatch(setCurrentRoom(room));
+    dispatch(setPrivateRoom(false));
     setActiveChatRoomId(room.id);
   };
 
